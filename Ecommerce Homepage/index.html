@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 20px auto;
+      }
+
+      .grid-container div {
+        padding: 10px;
+        text-align: center;
+        max-width: 200px;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .grid-container img {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+      }
+
+      p {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+    <script>
+      fetch("https://fakestoreapi.com/products")
+        .then((response) => response.json())
+        .then((products) => createGrid(products));
+
+      const createGrid = (products) => {
+        const gridContainer = document.createElement("div");
+        gridContainer.classList.add("grid-container");
+        document.body.appendChild(gridContainer);
+
+        products.forEach((products) => {
+          const productElement = document.createElement("div");
+          productElement.innerHTML = `
+          <img src="${products.image}" alt="${products.title}">
+          <p>${products.title}</p>
+          <button onclick="addToCart(${products.id})">Add to Cart</button>
+        `;
+
+          gridContainer.appendChild(productElement);
+        });
+      };
+
+      async function addToCart(productId) {
+        try {
+          const date = new Date().toISOString().split("T")[0];
+          const cartData = {
+            userId: 123,
+            date: date,
+            products: [{ productId: productId, quantity: 1 }],
+          };
+
+          await fetch("https://fakestoreapi.com/carts/7", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(cartData),
+          });
+
+          alert("Product added to cart successfully!");
+        } catch (error) {
+          console.error("Error adding to cart:", error);
+        }
+      }
+
+      createGrid();
+    </script>
+  </body>
+</html>

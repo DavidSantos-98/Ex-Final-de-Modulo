@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fake Store API Example</title>
+    <style>
+      .product {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="productDetails"></div>
+    <div id="relatedProducts"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const productId = urlParams.get("productId") || 1;
+
+          const productResponse = await fetch(
+            `https://fakestoreapi.com/products/${productId}`
+          );
+          const product = await productResponse.json();
+
+          const productDetailsContainer =
+            document.getElementById("productDetails");
+          productDetailsContainer.innerHTML = `
+          <div class="product">
+            <h2>${product.title}</h2>
+            <p>${product.description}</p>
+            <p>Price: $${product.price}</p>
+            <img src="${product.image}" alt="${product.title}" style="max-width: 200px;">
+          </div>
+        `;
+
+          const relatedProductsResponse = await fetch(
+            `https://fakestoreapi.com/products/category/${product.category}`
+          );
+          const relatedProducts = await relatedProductsResponse.json();
+
+          const relatedProductsContainer =
+            document.getElementById("relatedProducts");
+          relatedProductsContainer.innerHTML = `<h2>Related Products</h2>`;
+          relatedProducts.slice(0, 3).forEach((relatedProduct) => {
+            relatedProductsContainer.innerHTML += `
+            <div class="product">
+              <h3>${relatedProduct.title}</h3>
+              <p>Price: $${relatedProduct.price}</p>
+              <img src="${relatedProduct.image}" alt="${relatedProduct.title}" style="max-width: 150px;">
+            </div>
+          `;
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      });
+    </script>
+  </body>
+</html>

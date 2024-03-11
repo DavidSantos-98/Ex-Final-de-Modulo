@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-commerce Example</title>
+  </head>
+  <body>
+    <script>
+      class Ecommerce {
+        constructor() {
+          this.products = [];
+          this.cart = [];
+        }
+
+        addProduct(product) {
+          this.products.push(product);
+        }
+
+        setProductPrice(productId, price) {
+          const productIndex = this.products.findIndex(
+            (product) => product.id === productId
+          );
+
+          if (productIndex !== -1) {
+            this.products[productIndex].price = price;
+            console.log(
+              `Price for product with ID ${productId} updated to ${price}`
+            );
+          } else {
+            console.error(`Product with ID ${productId} not found`);
+          }
+        }
+
+        getAllProducts() {
+          return this.products;
+        }
+
+        getAllProductsNames() {
+          return this.products.map((product) => product.name).join("; ");
+        }
+
+        getProductById(productId) {
+          return this.products.find((product) => product.id === productId);
+        }
+
+        getProductByName(productName) {
+          return this.products.find((product) => product.name === productName);
+        }
+
+        getProductsByPrice(initialPrice, finalPrice) {
+          return this.products.filter(
+            (product) =>
+              product.price >= initialPrice && product.price <= finalPrice
+          );
+        }
+
+        addProductToCart(product) {
+          this.cart.push(product);
+        }
+
+        getCart() {
+          return this.cart;
+        }
+
+        getCartTotalPrice() {
+          return this.cart.reduce((total, product) => total + product.price, 0);
+        }
+      }
+
+      const ecommerce = new Ecommerce();
+
+      ecommerce.addProduct({ id: 1, name: "Product A", price: 20 });
+      ecommerce.addProduct({ id: 2, name: "Product B", price: 30 });
+      ecommerce.addProduct({ id: 3, name: "Product C", price: 40 });
+
+      ecommerce.setProductPrice(2, 35);
+
+      console.log("All Products:", ecommerce.getAllProducts());
+
+      console.log("Product by ID:", ecommerce.getProductById(1));
+
+      console.log("Product by Name:", ecommerce.getProductByName("Product B"));
+
+      console.log(
+        "Products by Price Range:",
+        ecommerce.getProductsByPrice(30, 40)
+      );
+
+      ecommerce.addProductToCart({ id: 1, name: "Product A", price: 20 });
+
+      console.log("Cart:", ecommerce.getCart());
+
+      console.log("Cart Total Price:", ecommerce.getCartTotalPrice());
+    </script>
+  </body>
+</html>
